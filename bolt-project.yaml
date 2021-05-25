@@ -1,0 +1,13 @@
+---
+name: simp_ee
+plugin-hooks:
+  puppet_library:
+    plugin: task
+    task: puppet_agent::install
+    parameters:
+      collection: puppet6
+modules:
+- dylanratcliffe/bolt_vagrant
+- puppetlabs/host_core
+- puppetlabs/stdlib
+- simp/simplib

@@ -1,0 +1,44 @@
+---
+simp::admin::admin_group: wheel
+
+# exec is required for bolt
+simp::mountpoints::tmp::tmp_opts:
+  - nodev
+  - nosuid
+
+selinux::login_resources:
+  vagrant:
+    seuser: staff_u
+    mls_range: 's0-s0:c0.c1023'
+
+pam::access::users:
+  vagrant:
+    origins:
+      - ALL
+    comment: 'vagrant user'
+
+sudo::default_entries:
+  vagrant:
+    content:
+      - '!requiretty'
+    target: vagrant
+    def_type: user
+
+sudo::user_specifications:
+  vagrant:
+    user_list:
+      - vagrant
+    runas: root
+    passwd: false
+    cmnd:
+      - ALL
+    options:
+      role: unconfined_r
+
+ssh::server::conf::authorizedkeysfile: '.ssh/authorized_keys'
+<% if defined('$simp_ee::install::release_package_name') { -%>
+
+simp::yum::repo::internet_simp::simp_repos_package: <%= $simp_ee::install::release_package_name %>
+simp_console::release_package_install: false
+simp_console::listen_address: '0.0.0.0'
+<% } -%>
