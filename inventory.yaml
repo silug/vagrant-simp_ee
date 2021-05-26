@@ -1,3 +1,6 @@
+---
 targets:
   - _plugin: task
     task: bolt_vagrant::targets
+    parameters:
+      winrm_regex: '^win'

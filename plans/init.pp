@@ -3,6 +3,10 @@
 plan simp_ee (
   TargetSpec          $targets     = 'all',
   Optional[String[1]] $license_key = system::env('SIMP_LICENSE_KEY'),
+  String[5]           $ip_subnet   = system::env('VAGRANT_IP_SUBNET') ? {
+    undef   => '10.10.16',
+    default => system::env('VAGRANT_IP_SUBNET'),
+  },
 ) {
   apply_prep($targets)
 
@@ -40,7 +44,7 @@ plan simp_ee (
     $memo + {
       $target.facts['fqdn'] => {
         'ip' => $target.facts['networking']['interfaces'].reduce('') |$m, $v| {
-          if $v[0] =~ /^e/ and $v[1]['ip'] {
+          if $v[0] =~ /^[Ee]/ and $v[1]['ip'] and $v[1]['mac'] and $v[1]['ip'].regsubst(/\.[^.]+$/, '') == $ip_subnet {
             $v[1]['ip']
           } else {
             $m
@@ -74,6 +78,21 @@ plan simp_ee (
         mode    => '0644',
         content => "role=${facts['role']}\n",
       }
+    }
+  }
+
+  # HACK - Ensure that ssh keepalives are sent to avoid timeouts.
+  apply(
+    $puppet,
+    '_description' => 'Enable ssh keepalives',
+  ) {
+    sshd_config { 'ClientAliveInterval':
+      ensure => present,
+      value  => '10',
+    }
+    ~> service { 'sshd':
+      ensure => running,
+      enable => true,
     }
   }
 
@@ -238,6 +257,7 @@ plan simp_ee (
         ],
         logoutput   => true,
         tries       => 2,
+        timeout     => 0,
         returns     => [0, 2],
       }
     }

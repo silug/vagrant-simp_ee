@@ -11,3 +11,4 @@ modules:
 - puppetlabs/host_core
 - puppetlabs/stdlib
 - simp/simplib
+- herculesteam/augeasproviders_ssh

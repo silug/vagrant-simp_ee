@@ -38,11 +38,23 @@ cli::network::interface: eth0
 
 # === cli::network::ipaddress ===
 # The IP address of the system.
-cli::network::ipaddress: <%= $facts['networking']['ip'] %>
+cli::network::ipaddress: "<%= $facts['networking']['interfaces'].reduce('') |$memo, $value| {
+  if $value[0] =~ /^e/ and $value[1]['ip'] and $value[1]['mac'] {
+    $value[1]['ip']
+  } else {
+    $memo
+  }
+} %>"
 
 # === cli::network::netmask ===
 # The netmask of the system.
-cli::network::netmask: <%= $facts['networking']['netmask'] %>
+cli::network::netmask: "<%= $facts['networking']['interfaces'].reduce('') |$memo, $value| {
+  if $value[0] =~ /^e/ and $value[1]['netmask'] and $value[1]['mac'] {
+    $value[1]['netmask']
+  } else {
+    $memo
+  }
+} %>"
 
 # === cli::network::set_up_nic ===
 # Whether to activate this NIC now.
@@ -99,7 +111,7 @@ puppetdb::master::config::puppetdb_port: 8139
 
 # === puppetdb::master::config::puppetdb_server ===
 # The DNS name or IP of the PuppetDB server.
-puppetdb::master::config::puppetdb_server: "%{hiera('simp_options::puppet::server')}"
+puppetdb::master::config::puppetdb_server: "%{lookup('simp_options::puppet::server')}"
 
 # === simp::runlevel ===
 # The default system runlevel (1-5).

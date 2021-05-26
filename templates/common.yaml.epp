@@ -1,4 +1,5 @@
 ---
+simp::puppet_server_hosts_entry: false
 simp::admin::admin_group: wheel
 
 # exec is required for bolt

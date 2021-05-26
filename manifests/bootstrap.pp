@@ -18,4 +18,16 @@ class simp_ee::bootstrap {
     # tries       => 2,
     logoutput   => true,
   }
+  -> exec { 'puppet agent -t':
+    path        => '/opt/puppetlabs/bin:/bin:/usr/bin',
+    environment => [
+      'USER=root',
+      'HOME=/root',
+    ],
+    refreshonly => true,
+    timeout     => 0,
+    # tries       => 2,
+    logoutput   => true,
+    returns     => [0, 2],
+  }
 }
