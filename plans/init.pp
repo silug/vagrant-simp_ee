@@ -262,4 +262,55 @@ plan simp_ee (
       }
     }
   }
+
+  unless ($agents - $console).empty {
+    out::message('Initial Puppet agent run')
+    ($agents - $console).parallelize |$target| {
+      # On Windows, use the `puppet_agent::run` plan since an exec of `puppet
+      # agent -t` does not appear to work correctly.
+      #
+      # On everything else (presumably Linux), use the exec so we can
+      # automatically retry.  Also, the `puppet_agent::run` plan exits with a
+      # useless error message "The Puppet run failed in an unexpected way".
+      if $target.facts['os']['name'] == 'windows' {
+        $pass_1 = run_plan(
+          'puppet_agent::run',
+          'targets'       => $target,
+          '_catch_errors' => true,
+        )
+
+        $exitcode = $pass_1[0].to_data['value']['exitcode']
+
+        if $exitcode in [0, 2] {
+          $pass_1
+        } elsif $exitcode == 1 {
+          $logs = $pass_1[0].to_data['value']['report']['logs'].map |$log| { $log['message'] }.join("\n")
+          fail_plan("Puppet exited with return value ${exitcode} on target ${target}:\n${logs}")
+        } else {
+          run_plan(
+            'puppet_agent::run',
+            'targets'       => $target,
+            '_catch_errors' => false,
+          )
+        }
+      } else {
+        apply(
+          $target,
+          '_description' => 'Initial Puppet agent run',
+        ) {
+          exec { 'puppet agent -t':
+            path        => '/opt/puppetlabs/bin:/bin:/usr/bin',
+            environment => [
+              'USER=root',
+              'HOME=/root',
+            ],
+            logoutput   => true,
+            tries       => 2,
+            timeout     => 0,
+            returns     => [0, 2],
+          }
+        }
+      }
+    }
+  }
 }
