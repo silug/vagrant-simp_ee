@@ -84,6 +84,13 @@ Vagrant.configure("2") do |config|
 
   config.trigger.after [:up, :provision, :reload], type: :command do |trigger|
     trigger.info = 'Running bolt plan'
-    trigger.run = { inline: 'bolt plan run simp_ee --verbose --trace --stream' }
+    trigger.run = {
+      inline: [
+        'bolt plan run simp_ee',
+        ENV.key?('BOLT_VERBOSE') ? '--verbose' : '--no-verbose',
+        ENV.key?('BOLT_TRACE') ? '--trace' : '',
+        ENV.key?('BOLT_STREAM') ? '--stream' : '',
+      ].join(' '),
+    }
   end
 end

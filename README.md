@@ -73,6 +73,9 @@ The following environment variables *can* be set if the defaults are not desirab
     VMs.  Defaults to `10.10.16`.
 * `VAGRANT_DOMAIN`: The DNS domain name used by the VMs.  Defaults to
     `simp-ee.test`.
+* `BOLT_VERBOSE`: Enable verbose output in the Bolt plan.
+* `BOLT_TRACE`: Enable error stack traces from the Bolt plan.
+* `BOLT_STREAM`: Enable streaming output from Bolt scripts and commands.
 
 ### Run `vagrant up`
 
