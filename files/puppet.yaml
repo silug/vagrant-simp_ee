@@ -1,0 +1,10 @@
+---
+simp_scanner::collectors:
+  default:
+    scanners:
+      - complianceengine
+
+lookup_options:
+  simp_scanner::collectors:
+    merge:
+      strategy: deep

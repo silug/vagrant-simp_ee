@@ -89,8 +89,14 @@ plan simp_ee (
     sshd_config { 'ClientAliveInterval':
       ensure => present,
       value  => '10',
+      notify => Service['sshd'],
     }
-    ~> service { 'sshd':
+    sshd_config { 'ClientAliveCountMax':
+      ensure => present,
+      value  => '3',
+      notify => Service['sshd'],
+    }
+    service { 'sshd':
       ensure => running,
       enable => true,
     }
@@ -209,12 +215,16 @@ plan simp_ee (
     ) {
       $files = [
         '/etc/puppetlabs/code/environments/production/hiera.yaml',
-        '/etc/puppetlabs/code/environments/production/data/RedHat.yaml',
-        '/etc/puppetlabs/code/environments/production/data/windows.yaml',
+        '/etc/puppetlabs/code/environments/production/data/os/RedHat.yaml',
+        '/etc/puppetlabs/code/environments/production/data/os/windows.yaml',
         '/etc/puppetlabs/code/environments/production/data/role/console.yaml',
+        '/etc/puppetlabs/code/environments/production/data/role/puppet.yaml',
       ]
 
-      file { '/etc/puppetlabs/code/environments/production/data/role':
+      file { [
+        '/etc/puppetlabs/code/environments/production/data/os',
+        '/etc/puppetlabs/code/environments/production/data/role',
+      ]:
         ensure => directory,
         owner  => 'root',
         group  => 'puppet',

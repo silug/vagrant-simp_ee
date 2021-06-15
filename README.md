@@ -36,7 +36,7 @@ export SIMP_LICENSE_KEY=$( cat license.key )
 ```
 
 **NOTE**: Without this environment variable set, the Bolt plan will set up SIMP
-*Community Edition on the SIMP server and will skip the Console/Scanner setup.
+Community Edition on the SIMP server and will skip the Console/Scanner setup.
 
 ### Set the `SIMP_AGENTS` environment variable
 
@@ -94,8 +94,15 @@ Once the Console has started, it will be available at http://localhost:6468/.
 
 The remaining configuration is manual.
 
-1. Retrieve the registration token from http://localhost:6468/#infrastructure-client.
+1. Retrieve the registration token, MSI package URL, and RPM package URL from http://localhost:6468/#infrastructure-client.
 2. Configure the `simp_scanner` Puppet module.
+    ```
+    bolt plan run simp_ee::scanner -t all \
+        token='<registration token>' \
+        msi_pkg='<MSI package URL>' \
+        rpm_pkg='<MSI package URL>'
+    ```
+    **Be sure to substitute `console.simp-ee.test` for `localhost` in the package URLs!**
 3. Run `puppet agent -t` on all nodes.
 4. Run `simp-scanner scan` on all nodes.
 

@@ -13,11 +13,13 @@ hierarchy:
     paths:
       - "domains/%{facts.domain}.yaml"
   - name: Per-OS data
-    paths:
-      - "%{facts.os.family}.yaml"
-      - "%{facts.os.name}/%{facts.os.release.full}.yaml"
-      - "%{facts.os.name}/%{facts.os.release.major}.yaml"
-      - "%{facts.os.name}.yaml"
+    globs:
+      - "os/%{facts.os.family}.yaml"
+      - "os/%{facts.os.family}/*.yaml"
+      - "os/%{facts.os.name}-%{facts.os.release.full}.yaml"
+      - "os/%{facts.os.name}-%{facts.os.release.major}.yaml"
+      - "os/%{facts.os.name}/*.yaml"
+      - "os/%{facts.os.name}.yaml"
   - name: Per-hostgroup data - See site.pp for more information
     paths:
       - "hostgroups/%{::hostgroup}.yaml"
