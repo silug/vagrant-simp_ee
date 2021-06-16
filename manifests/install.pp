@@ -28,6 +28,10 @@ class simp_ee::install (
     'simp-enterprise',
   ],
   String           $license_key_file     = '/etc/simp/license.key',
+  Optional[String] $simprelease          = undef,
+  Optional[String] $simpreleasetype      = undef,
+  Optional[String] $ee_simprelease       = undef,
+  Optional[String] $ee_simpreleasetype   = undef,
 ) {
   package { $release_package_name:
     ensure   => installed,
@@ -48,6 +52,38 @@ class simp_ee::install (
       group   => 'root',
       mode    => '0640',
       content => $license_key,
+    }
+  }
+
+  if $simprelease {
+    file { '/etc/yum/vars/simprelease':
+      ensure  => file,
+      content => "${simprelease}\n",
+      require => Package[$release_package_name],
+    }
+  }
+
+  if $simpreleasetype {
+    file { '/etc/yum/vars/simpreleasetype':
+      ensure  => file,
+      content => "${simpreleasetype}\n",
+      require => Package[$release_package_name],
+    }
+  }
+
+  if $ee_simprelease {
+    file { '/etc/yum/vars/ee_simprelease':
+      ensure  => file,
+      content => "${ee_simprelease}\n",
+      require => Package[$release_package_name],
+    }
+  }
+
+  if $ee_simpreleasetype {
+    file { '/etc/yum/vars/ee_simpreleasetype':
+      ensure  => file,
+      content => "${ee_simpreleasetype}\n",
+      require => Package[$release_package_name],
     }
   }
 

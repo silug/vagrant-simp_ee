@@ -1,12 +1,22 @@
 # @summary Install SIMP Enterprise Edition
-# @param targets The targets to run on.
+# @param targets The targets to run on
+# @param license_key A SIMP EE license key
+# @param ip_subnet The IP subnet range to use for the private network (the IP address with the last octet removed)
+# @param simprelease SIMP release version
+# @param simpreleasetype SIMP release type ("development", for example)
+# @param ee_simprelease SIMP EE release version
+# @param ee_simpreleasetype SIMP EE release type ("development", for example
 plan simp_ee (
-  TargetSpec          $targets     = 'all',
-  Optional[String[1]] $license_key = system::env('SIMP_LICENSE_KEY'),
-  String[5]           $ip_subnet   = system::env('VAGRANT_IP_SUBNET') ? {
+  TargetSpec          $targets              = 'all',
+  Optional[String[1]] $license_key          = system::env('SIMP_LICENSE_KEY'),
+  String[5]           $ip_subnet            = system::env('VAGRANT_IP_SUBNET') ? {
     undef   => '10.10.16',
     default => system::env('VAGRANT_IP_SUBNET'),
   },
+  Optional[String[1]] $simprelease          = system::env('SIMP_RELEASE'),
+  Optional[String[1]] $simpreleasetype      = system::env('SIMP_RELEASETYPE'),
+  Optional[String[1]] $ee_simprelease       = system::env('SIMP_EE_RELEASE'),
+  Optional[String[1]] $ee_simpreleasetype   = system::env('SIMP_EE_RELEASETYPE'),
 ) {
   apply_prep($targets)
 
@@ -109,7 +119,11 @@ plan simp_ee (
     '_catch_errors' => true,
   ) {
     class { 'simp_ee::install':
-      license_key => $license_key,
+      license_key        => $license_key,
+      simprelease        => $simprelease,
+      simpreleasetype    => $simpreleasetype,
+      ee_simprelease     => $ee_simprelease,
+      ee_simpreleasetype => $ee_simpreleasetype,
     }
     -> class { 'simp_ee::config': }
     ~> class { 'simp_ee::bootstrap': }

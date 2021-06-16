@@ -76,6 +76,10 @@ The following environment variables *can* be set if the defaults are not desirab
 * `BOLT_VERBOSE`: Enable verbose output in the Bolt plan.
 * `BOLT_TRACE`: Enable error stack traces from the Bolt plan.
 * `BOLT_STREAM`: Enable streaming output from Bolt scripts and commands.
+* `SIMP_RELEASE`: Override `/etc/yum/vars/simprelease` on the SIMP server.
+* `SIMP_RELEASETYPE`: Override `/etc/yum/vars/simpreleasetype` on the SIMP server.
+* `SIMP_EE_RELEASE`: Override `/etc/yum/vars/ee_simprelease` on the SIMP server.
+* `SIMP_EE_RELEASETYPE`: Override `/etc/yum/vars/ee_simpreleasetype` on the SIMP server.
 
 ### Run `vagrant up`
 
