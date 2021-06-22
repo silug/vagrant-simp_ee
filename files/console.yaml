@@ -1,7 +1,0 @@
----
-classes:
-  - simp_console
-  - iptables
-
-iptables::ports:
-  6468: {}

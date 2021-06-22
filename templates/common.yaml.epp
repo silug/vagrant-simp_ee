@@ -1,6 +1,7 @@
 ---
 simp::puppet_server_hosts_entry: false
 simp::admin::admin_group: wheel
+simp::sssd::client::ldap_server_type: 'plain'
 
 # exec is required for bolt
 simp::mountpoints::tmp::tmp_opts:
@@ -37,9 +38,3 @@ sudo::user_specifications:
       role: unconfined_r
 
 ssh::server::conf::authorizedkeysfile: '.ssh/authorized_keys'
-<% if defined('$simp_ee::install::release_package_name') { -%>
-
-simp::yum::repo::internet_simp::simp_repos_package: <%= $simp_ee::install::release_package_name %>
-simp_console::release_package_install: false
-simp_console::listen_address: '0.0.0.0'
-<% } -%>

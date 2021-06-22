@@ -34,9 +34,8 @@ class simp_ee::install (
   Optional[String] $ee_simpreleasetype   = undef,
 ) {
   package { $release_package_name:
-    ensure   => installed,
-    source   => $release_package,
-    provider => rpm,
+    ensure => installed,
+    source => $release_package,
   }
 
   unless $license_key =~ Undef {

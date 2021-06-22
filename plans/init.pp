@@ -93,29 +93,15 @@ plan simp_ee (
 
   # HACK - Ensure that ssh keepalives are sent to avoid timeouts.
   apply(
-    $puppet,
+    get_targets($targets).filter |$target| { $target.facts['kernel'] != 'windows' },
     '_description' => 'Enable ssh keepalives',
   ) {
-    sshd_config { 'ClientAliveInterval':
-      ensure => present,
-      value  => '10',
-      notify => Service['sshd'],
-    }
-    sshd_config { 'ClientAliveCountMax':
-      ensure => present,
-      value  => '3',
-      notify => Service['sshd'],
-    }
-    service { 'sshd':
-      ensure => running,
-      enable => true,
-    }
+    include simp_ee::keepalive
   }
 
   $bootstrap_results = apply(
     $puppet,
     '_description'  => 'Bootstrap the SIMP server',
-    # '_description'  => 'Prep the SIMP server for bootstrap',
     '_catch_errors' => true,
   ) {
     class { 'simp_ee::install':
@@ -141,28 +127,21 @@ plan simp_ee (
     }
   }
 
-  # run_command('simp bootstrap -r', $puppet, 'Bootstrap the SIMP server')
+  run_plan('simp_ee::check_puppetserver', $puppet)
 
-  # $service_results = run_task(
-  #   'service',
-  #   $puppet,
-  #   'Check puppetserver status',
-  #   '_catch_errors' => true,
-  #   'action'        => 'status',
-  #   'name'          => 'puppetserver',
-  # )
-
-  # if $service_results.any |$result| { $result.value['status'] =~ /ActiveState=failed/ } {
-  #   $failed_targets = $service_results.reduce([]) |$memo, $result| {
-  #     if $result.value['status'] =~ /ActiveState=failed/ {
-  #       $memo + [ $result.target ]
-  #     } else {
-  #       $memo
-  #     }
-  #   }
-  #
-  #   fail_plan("Failed to start puppetserver on ${failed_targets}")
-  # }
+  apply(
+    $puppet,
+    '_description'  => 'Classify nodes',
+  ) {
+    class { 'simp_ee::install':
+      license_key        => $license_key,
+      simprelease        => $simprelease,
+      simpreleasetype    => $simpreleasetype,
+      ee_simprelease     => $ee_simprelease,
+      ee_simpreleasetype => $ee_simpreleasetype,
+    }
+    -> class { 'simp_ee::classify': }
+  }
 
   $fqdns = get_targets($targets).reduce([]) |$memo, $target| {
     $memo + $target.facts['fqdn']
@@ -224,39 +203,6 @@ plan simp_ee (
 
   if $license_key and !$console.empty {
     apply(
-      $puppet,
-      '_description' => 'Classify nodes',
-    ) {
-      $files = [
-        '/etc/puppetlabs/code/environments/production/hiera.yaml',
-        '/etc/puppetlabs/code/environments/production/data/os/RedHat.yaml',
-        '/etc/puppetlabs/code/environments/production/data/os/windows.yaml',
-        '/etc/puppetlabs/code/environments/production/data/role/console.yaml',
-        '/etc/puppetlabs/code/environments/production/data/role/puppet.yaml',
-      ]
-
-      file { [
-        '/etc/puppetlabs/code/environments/production/data/os',
-        '/etc/puppetlabs/code/environments/production/data/role',
-      ]:
-        ensure => directory,
-        owner  => 'root',
-        group  => 'puppet',
-        mode   => '0750',
-      }
-
-      $files.each |$name| {
-        file { $name:
-          ensure  => file,
-          owner   => 'root',
-          group   => 'puppet',
-          mode    => '0640',
-          content => file("simp_ee/${$name.split('/')[-1]}"),
-        }
-      }
-    }
-
-    apply(
       $console,
       '_description' => 'Bootstrap console server',
     ) {
@@ -266,12 +212,16 @@ plan simp_ee (
         group  => 'root',
         mode   => '0755',
       }
-      file { '/etc/simp/license.key':
+      -> file { '/etc/simp/license.key':
         ensure  => file,
         owner   => 'root',
         group   => 'root',
         mode    => '0644',
         content => "${license_key}\n",
+      }
+      -> package { 'simp-release-enterprise':
+        ensure => installed,
+        source => 'https://download.simp-project.com/simp-release-enterprise.rpm',
       }
       -> exec { 'puppet agent -t':
         path        => '/opt/puppetlabs/bin:/bin:/usr/bin',
@@ -322,7 +272,14 @@ plan simp_ee (
           $target,
           '_description' => 'Initial Puppet agent run',
         ) {
-          exec { 'puppet agent -t':
+          # FIXME - This is a workaround for a failure.  Puppet should be
+          # installing the package, but fails for unknown reasons.  This may be
+          # a bug in a particular version of the puppet-agent package.
+          package { 'simp-release-community':
+            ensure => installed,
+            source => 'https://download.simp-project.com/simp-release-community.rpm',
+          }
+          -> exec { 'puppet agent -t':
             path        => '/opt/puppetlabs/bin:/bin:/usr/bin',
             environment => [
               'USER=root',

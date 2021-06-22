@@ -1,0 +1,14 @@
+---
+simp_scanner::collectors:
+  default:
+    scanners:
+      - complianceengine
+
+lookup_options:
+  simp_scanner::collectors:
+    merge:
+      strategy: deep
+<% if defined('$simp_ee::install::release_package_name') { -%>
+
+simp::yum::repo::internet_simp::simp_repos_package: <%= $simp_ee::install::release_package_name %>
+<% } -%>

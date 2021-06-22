@@ -7,12 +7,15 @@
 ### Classes
 
 * [`simp_ee::bootstrap`](#simp_eebootstrap): Run "simp bootstrap"
+* [`simp_ee::classify`](#simp_eeclassify): Classify nodes
 * [`simp_ee::config`](#simp_eeconfig): Configure for simp config
 * [`simp_ee::install`](#simp_eeinstall): Installs SIMP
+* [`simp_ee::keepalive`](#simp_eekeepalive): Enable ssh keepalives to avoid timeouts
 
 ### Plans
 
 * [`simp_ee`](#simp_ee): Install SIMP Enterprise Edition
+* [`simp_ee::check_puppetserver`](#simp_eecheck_puppetserver): Check the status of puppetserver
 * [`simp_ee::scanner`](#simp_eescanner): Configure simp_scanner Puppet module
 
 ## Classes
@@ -28,6 +31,66 @@ Run "simp bootstrap"
 ```puppet
 include simp_ee::bootstrap
 ```
+
+### <a name="simp_eeclassify"></a>`simp_ee::classify`
+
+Classify nodes
+
+#### Parameters
+
+The following parameters are available in the `simp_ee::classify` class:
+
+* [`files`](#files)
+* [`owner`](#owner)
+* [`group`](#group)
+* [`dirmode`](#dirmode)
+* [`filemode`](#filemode)
+
+##### <a name="files"></a>`files`
+
+Data type: `Array`
+
+Hiera files to manage
+
+Default value: `[
+    '/etc/puppetlabs/code/environments/production/hiera.yaml',
+    '/etc/puppetlabs/code/environments/production/data/os/RedHat.yaml',
+    '/etc/puppetlabs/code/environments/production/data/os/windows.yaml',
+    '/etc/puppetlabs/code/environments/production/data/role/console.yaml',
+    '/etc/puppetlabs/code/environments/production/data/role/puppet.yaml',
+  ]`
+
+##### <a name="owner"></a>`owner`
+
+Data type: `String[1]`
+
+User owner of managed files and directories
+
+Default value: `'root'`
+
+##### <a name="group"></a>`group`
+
+Data type: `String[1]`
+
+Group owner of managed files and directories
+
+Default value: `'puppet'`
+
+##### <a name="dirmode"></a>`dirmode`
+
+Data type: `String[4]`
+
+Permissions for managed directories
+
+Default value: `'0750'`
+
+##### <a name="filemode"></a>`filemode`
+
+Data type: `String[4]`
+
+Permissions for managed files
+
+Default value: `'0640'`
 
 ### <a name="simp_eeconfig"></a>`simp_ee::config`
 
@@ -184,6 +247,10 @@ Data type: `Optional[String]`
 
 Default value: ``undef``
 
+### <a name="simp_eekeepalive"></a>`simp_ee::keepalive`
+
+Enable ssh keepalives to avoid timeouts
+
 ## Plans
 
 ### <a name="simp_ee"></a>`simp_ee`
@@ -257,6 +324,22 @@ Data type: `Optional[String[1]]`
 SIMP EE release type ("development", for example
 
 Default value: `system::env('SIMP_EE_RELEASETYPE')`
+
+### <a name="simp_eecheck_puppetserver"></a>`simp_ee::check_puppetserver`
+
+Check the status of puppetserver
+
+#### Parameters
+
+The following parameters are available in the `simp_ee::check_puppetserver` plan:
+
+* [`targets`](#targets)
+
+##### <a name="targets"></a>`targets`
+
+Data type: `TargetSpec`
+
+The targets to run on
 
 ### <a name="simp_eescanner"></a>`simp_ee::scanner`
 
