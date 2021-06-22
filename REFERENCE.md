@@ -268,6 +268,8 @@ The following parameters are available in the `simp_ee` plan:
 * [`simpreleasetype`](#simpreleasetype)
 * [`ee_simprelease`](#ee_simprelease)
 * [`ee_simpreleasetype`](#ee_simpreleasetype)
+* [`rhsm_user`](#rhsm_user)
+* [`rhsm_pass`](#rhsm_pass)
 
 ##### <a name="targets"></a>`targets`
 
@@ -324,6 +326,22 @@ Data type: `Optional[String[1]]`
 SIMP EE release type ("development", for example
 
 Default value: `system::env('SIMP_EE_RELEASETYPE')`
+
+##### <a name="rhsm_user"></a>`rhsm_user`
+
+Data type: `Optional[String[1]]`
+
+Username for registering RHEL nodes with subscription management
+
+Default value: `system::env('SIMP_RHSM_USER')`
+
+##### <a name="rhsm_pass"></a>`rhsm_pass`
+
+Data type: `Optional[String[1]]`
+
+Password for registering RHEL nodes with subscription management
+
+Default value: `system::env('SIMP_RHSM_PASS')`
 
 ### <a name="simp_eecheck_puppetserver"></a>`simp_ee::check_puppetserver`
 

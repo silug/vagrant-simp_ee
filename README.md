@@ -80,6 +80,8 @@ The following environment variables *can* be set if the defaults are not desirab
 * `SIMP_RELEASETYPE`: Override `/etc/yum/vars/simpreleasetype` on the SIMP server.
 * `SIMP_EE_RELEASE`: Override `/etc/yum/vars/ee_simprelease` on the SIMP server.
 * `SIMP_EE_RELEASETYPE`: Override `/etc/yum/vars/ee_simpreleasetype` on the SIMP server.
+* `SIMP_RHSM_USER`: Username for registering RHEL nodes with subscription management.
+* `SIMP_RHSM_PASS`: Password for registering RHEL nodes with subscription management.
 
 ### Run `vagrant up`
 

@@ -4,4 +4,5 @@
 /.rerun.json
 /.resource_types/
 /.vagrant/
+/.yardoc/
 /bolt-debug.log

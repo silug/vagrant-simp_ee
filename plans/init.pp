@@ -6,6 +6,8 @@
 # @param simpreleasetype SIMP release type ("development", for example)
 # @param ee_simprelease SIMP EE release version
 # @param ee_simpreleasetype SIMP EE release type ("development", for example
+# @param rhsm_user Username for registering RHEL nodes with subscription management
+# @param rhsm_pass Password for registering RHEL nodes with subscription management
 plan simp_ee (
   TargetSpec          $targets              = 'all',
   Optional[String[1]] $license_key          = system::env('SIMP_LICENSE_KEY'),
@@ -17,8 +19,26 @@ plan simp_ee (
   Optional[String[1]] $simpreleasetype      = system::env('SIMP_RELEASETYPE'),
   Optional[String[1]] $ee_simprelease       = system::env('SIMP_EE_RELEASE'),
   Optional[String[1]] $ee_simpreleasetype   = system::env('SIMP_EE_RELEASETYPE'),
+  Optional[String[1]] $rhsm_user            = system::env('SIMP_RHSM_USER'),
+  Optional[String[1]] $rhsm_pass            = system::env('SIMP_RHSM_PASS'),
 ) {
   apply_prep($targets)
+
+  $rhel = get_targets($targets).filter |$target| {
+    $target.facts['os']['name'] == 'RedHat'
+  }
+
+  unless $rhel.empty {
+    if $rhsm_user != undef and $rhsm_pass != undef {
+      run_command(
+        "subscription-manager register --username='${rhsm_user}' --password='${rhsm_pass}' --auto-attach",
+        $rhel,
+        'description' => 'Register with RHEL subscription management',
+        )
+    } else {
+      out::message("RHEL nodes ${rhel} found, but no subscription-manager username/password defined.\nyum may not be functional.")
+    }
+  }
 
   get_targets($targets).each |$target| {
     if $target.facts['role'] =~ Undef {
