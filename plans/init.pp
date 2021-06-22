@@ -31,7 +31,7 @@ plan simp_ee (
   unless $rhel.empty {
     if $rhsm_user != undef and $rhsm_pass != undef {
       run_command(
-        "subscription-manager register --username='${rhsm_user}' --password='${rhsm_pass}' --auto-attach",
+        "subscription-manager status || subscription-manager register --username='${rhsm_user}' --password='${rhsm_pass}' --auto-attach",
         $rhel,
         'description' => 'Register with RHEL subscription management',
         )
