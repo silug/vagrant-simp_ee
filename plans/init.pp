@@ -34,7 +34,7 @@ plan simp_ee (
         "subscription-manager status || subscription-manager register --username='${rhsm_user}' --password='${rhsm_pass}' --auto-attach",
         $rhel,
         'description' => 'Register with RHEL subscription management',
-        )
+      )
     } else {
       out::message("RHEL nodes ${rhel} found, but no subscription-manager username/password defined.\nyum may not be functional.")
     }

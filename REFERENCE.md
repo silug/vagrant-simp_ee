@@ -16,6 +16,7 @@
 
 * [`simp_ee`](#simp_ee): Install SIMP Enterprise Edition
 * [`simp_ee::check_puppetserver`](#simp_eecheck_puppetserver): Check the status of puppetserver
+* [`simp_ee::rhsm_unregister`](#simp_eerhsm_unregister): Unregister RHEL subscription management
 * [`simp_ee::scanner`](#simp_eescanner): Configure simp_scanner Puppet module
 
 ## Classes
@@ -350,6 +351,22 @@ Check the status of puppetserver
 #### Parameters
 
 The following parameters are available in the `simp_ee::check_puppetserver` plan:
+
+* [`targets`](#targets)
+
+##### <a name="targets"></a>`targets`
+
+Data type: `TargetSpec`
+
+The targets to run on
+
+### <a name="simp_eerhsm_unregister"></a>`simp_ee::rhsm_unregister`
+
+Unregister RHEL subscription management
+
+#### Parameters
+
+The following parameters are available in the `simp_ee::rhsm_unregister` plan:
 
 * [`targets`](#targets)
 

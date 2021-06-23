@@ -8,6 +8,7 @@
     - [Optional environment variables](#optional-environment-variables)
     - [Run `vagrant up`](#run-vagrant-up)
     - [Manual configuration](#manual-configuration)
+    - [Shutting down](#shutting-down)
   - [Using the Bolt plan on real servers](#using-the-bolt-plan-on-real-servers)
   - [Known issues](#known-issues)
     - [Windows agents with Fedora's `vagrant` package](#windows-agents-with-fedoras-vagrant-package)
@@ -111,6 +112,18 @@ The remaining configuration is manual.
     **Be sure to substitute `console.simp-ee.test` for `localhost` in the package URLs!**
 3. Run `puppet agent -t` on all nodes.
 4. Run `simp-scanner scan` on all nodes.
+
+### Shutting down
+
+`vagrant destroy -f` will stop all VMs and delete them.
+
+**Please note:** If you have any Red Hat Enterprise Linux systems, you should run
+```
+bolt plan run simp_ee::rhsm_unregister -t 'rhel*'
+```
+*before* running `vagrant destroy`.  Otherwise you will need to remove the nodes
+from https://access.redhat.com/management/systems or your local Red Hat Satellite
+manually.
 
 ## Using the Bolt plan on real servers
 
