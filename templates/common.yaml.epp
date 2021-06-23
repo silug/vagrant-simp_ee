@@ -1,4 +1,42 @@
 ---
+# Compliance profile(s) to enforce
+compliance_markup::enforcement: []
+
+# Compliance profiles to validate the catalog
+# against.  Likely duplicates the previous setting.
+compliance_markup::validate_profiles: []
+
+# Enable generating catalog compliance reports
+classes:
+  - compliance_markup
+
+# Generate full catalog compliance reports
+compliance_markup::report_types:
+  - full
+
+# These defaults are required for catalog compilation
+# but should never be used as-is for production systems.
+simp_rsyslog::log_servers:
+  - '127.0.0.1'
+simp_grub::password: 'password'
+simp_grub::admin: 'admin'
+
+# Needed for idempotency
+simp_enterprise_el::logfiles::ignore:
+  - '/puppet-agent.*\.log$'
+
+# Guarantee that ssh access is allowed
+lookup_options:
+  iptables::ports:
+    merge:
+      strategy: deep
+
+iptables::ports:
+  '22':
+    proto: tcp
+    trusted_nets:
+      - '0.0.0.0/0'
+
 simp::puppet_server_hosts_entry: false
 simp::admin::admin_group: wheel
 simp::sssd::client::ldap_server_type: 'plain'
