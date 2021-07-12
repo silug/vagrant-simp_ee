@@ -12,7 +12,7 @@ agents = {
   'win2019'   => { 'index' => 14, 'box' => 'gusztavvargadr/windows-server', 'box_version' => '1809.0.2012', },
   'centos7'   => { 'index' => 15, 'box' => 'centos/7', },
   'centos8'   => { 'index' => 16, 'box' => 'centos/8', },
-  'oel7'      => { 'index' => 17, 'box' => 'onyxpoint/oel-7-x86_64', },
+  'oel7'      => { 'index' => 17, 'box' => 'generic/oracle7', },
   'oel8'      => { 'index' => 18, 'box' => 'generic/oracle8', },
   'rhel7'     => { 'index' => 19, 'box' => 'generic/rhel7', },
   'rhel8'     => { 'index' => 20, 'box' => 'generic/rhel8', },

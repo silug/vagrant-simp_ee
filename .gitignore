@@ -2,6 +2,7 @@
 /.modules/
 /.plan_cache.json
 /.rerun.json
+/.task_cache.json
 /.resource_types/
 /.vagrant/
 /.yardoc/
