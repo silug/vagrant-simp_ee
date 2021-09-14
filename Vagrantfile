@@ -65,6 +65,7 @@ Vagrant.configure("2") do |config|
       agent.vm.box = value['box']
       agent.vm.box_version = value['box_version'] unless value['box_version'].nil?
       if %r{^win}.match?(key)
+        agent.vm.communicator = 'winrm'
         agent.vm.hostname = key
         agent.vm.provision 'shell', inline: <<~END
           Set-ItemProperty "HKLM:\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters" -Name Domain -Value #{domain}
