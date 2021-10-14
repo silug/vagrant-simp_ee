@@ -54,7 +54,7 @@ Vagrant.configure("2") do |config|
   end
 
   agents.each do |key, value|
-    next unless ENV['SIMP_AGENTS'].nil? || ENV['SIMP_AGENTS'].split(%r{\s+}).include?(key)
+    next unless ENV['SIMP_AGENTS'].nil? || ENV['SIMP_AGENTS'].split(%r{[\s,]+}).include?(key)
 
     if value['box'].nil?
       warn "VM #{key} requested but no box defined"
