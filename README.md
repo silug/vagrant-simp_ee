@@ -107,7 +107,7 @@ The remaining configuration is manual.
     bolt plan run simp_ee::scanner -t all \
         token='<registration token>' \
         msi_pkg='<MSI package URL>' \
-        rpm_pkg='<MSI package URL>'
+        rpm_pkg='<RPM package URL>'
     ```
     **Be sure to substitute `console.simp-ee.test` for `localhost` in the package URLs!**
 3. Run `puppet agent -t` on all nodes.
