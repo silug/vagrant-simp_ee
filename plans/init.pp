@@ -163,6 +163,23 @@ plan simp_ee (
     -> class { 'simp_ee::classify': }
   }
 
+  apply(
+    $puppet,
+    '_description' => 'Run puppet agent on puppet server',
+    ) {
+      exec { 'puppet agent -t':
+            path        => '/opt/puppetlabs/bin:/bin:/usr/bin',
+            environment => [
+              'USER=root',
+              'HOME=/root',
+            ],
+            logoutput   => true,
+            tries       => 2,
+            timeout     => 0,
+            returns     => [0, 2],
+          }
+    }
+
   $fqdns = get_targets($targets).reduce([]) |$memo, $target| {
     $memo + $target.facts['fqdn']
   }
