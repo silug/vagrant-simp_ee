@@ -20,7 +20,9 @@ class simp_ee::config {
     owner   => 'root',
     group   => 'puppet',
     mode    => '0640',
-    content => epp('simp_ee/common.yaml.epp'),
+    content => epp('simp_ee/common.yaml.epp', {
+      user => $facts["ssh_user"],
+    }),
   }
 
   file { '/etc/puppetlabs/puppet/autosign.conf':

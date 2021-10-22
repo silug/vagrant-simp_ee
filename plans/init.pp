@@ -22,6 +22,11 @@ plan simp_ee (
   Optional[String[1]] $rhsm_user            = system::env('SIMP_RHSM_USER'),
   Optional[String[1]] $rhsm_pass            = system::env('SIMP_RHSM_PASS'),
 ) {
+
+  get_targets($targets).each |$target| {
+    add_facts($target, 'ssh_user' => $target.user)
+  }
+
   apply_prep($targets)
 
   $rhel = get_targets($targets).filter |$target| {

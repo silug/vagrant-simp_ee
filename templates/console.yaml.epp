@@ -4,7 +4,10 @@ classes:
   - iptables
 
 iptables::ports:
-  6468: {}
+  6468:
+    proto: tcp
+    trusted_nets:
+      - '0.0.0.0/0'
 
 <% if defined('$simp_ee::install::release_package_name') { -%>
 simp::yum::repo::internet_simp::simp_repos_package: <%= $simp_ee::install::release_package_name %>

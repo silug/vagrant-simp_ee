@@ -1,3 +1,5 @@
+<%- | String $user
+| -%>
 ---
 # Compliance profile(s) to enforce
 compliance_markup::enforcement: []
@@ -47,27 +49,27 @@ simp::mountpoints::tmp::tmp_opts:
   - nosuid
 
 selinux::login_resources:
-  vagrant:
+  <%= $user %>:
     seuser: staff_u
     mls_range: 's0-s0:c0.c1023'
 
 pam::access::users:
-  vagrant:
+  <%= $user %>:
     origins:
       - ALL
-    comment: 'vagrant user'
+    comment: '<%= $user %> user'
 
 sudo::default_entries:
-  vagrant:
+  <%= $user %>:
     content:
       - '!requiretty'
-    target: vagrant
+    target: <%= $user %>
     def_type: user
 
 sudo::user_specifications:
-  vagrant:
+  <%= $user %>:
     user_list:
-      - vagrant
+      - <%= $user %>
     runas: root
     passwd: false
     cmnd:
