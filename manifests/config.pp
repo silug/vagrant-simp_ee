@@ -14,6 +14,8 @@ class simp_ee::config {
       'HOME=/root',
     ],
     refreshonly => true,
+    timeout     => 0,
+    logoutput   => true,
   }
   -> file { '/etc/puppetlabs/code/environments/production/data/common.yaml':
     ensure  => file,

@@ -204,6 +204,7 @@ plan simp_ee (
       path        => '/bin:/usr/bin',
       cwd         => '/var/simp/environments/production/FakeCA',
       refreshonly => true,
+      timeout     => 0,
     }
     ~> exec { 'chgrp -R puppet /var/simp/environments/production/site_files/pki_files':
       path        => '/bin:/usr/bin',
