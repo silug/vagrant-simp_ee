@@ -1,6 +1,6 @@
 ---
 classes:
-  - simp_console
+  - sicura_console
   - iptables
 
 iptables::ports:
@@ -9,8 +9,9 @@ iptables::ports:
     trusted_nets:
       - '0.0.0.0/0'
 
-<% if defined('$simp_ee::install::release_package_name') { -%>
-simp::yum::repo::internet_simp::simp_repos_package: <%= $simp_ee::install::release_package_name %>
-simp_console::release_package_install: false
+<% if defined('$simp_ee::install::console_release_package_name') { -%>
+simp::yum::repo::internet_simp::simp_repos_package:  <%= $simp_ee::install::console_release_package_name %>
+simp::yum::repo::internet_simp::simp_repos_package_url:  <%= $simp_ee::install::console_release %>
+sicura_console::release_package_install: false
 <% } -%>
-simp_console::listen_address: '0.0.0.0'
+sicura_console::listen_address: '0.0.0.0'

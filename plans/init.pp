@@ -249,22 +249,22 @@ plan simp_ee (
       $console,
       '_description' => 'Bootstrap console server',
     ) {
-      file { '/etc/simp':
+      file { '/etc/sicura':
         ensure => directory,
         owner  => 'root',
         group  => 'root',
         mode   => '0755',
       }
-      -> file { '/etc/simp/license.key':
+      -> file { '/etc/sicura/license.key':
         ensure  => file,
         owner   => 'root',
         group   => 'root',
         mode    => '0644',
         content => "${license_key}\n",
       }
-      -> package { 'simp-release-enterprise':
+      -> package { 'sicura-release-enterprise':
         ensure => installed,
-        source => 'https://download.simp-project.com/simp-release-enterprise.rpm',
+        source => 'https://download.simp-project.com/sicura-release-enterprise.el7.rpm',
       }
       -> exec { 'puppet agent -t':
         path        => '/opt/puppetlabs/bin:/bin:/usr/bin',

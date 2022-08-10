@@ -8,13 +8,15 @@
 #   include simp_ee::install
 class simp_ee::install (
   String           $community_release    = 'https://download.simp-project.com/simp-release-community.rpm',
-  String           $enterprise_release   = 'https://download.simp-project.com/simp-release-enterprise.rpm',
+  String           $enterprise_release   = "https://download.simp-project.com/sicura-release-enterprise.el${facts['os']['release']['major']}.rpm",
+  String           $console_release      = "https://download.simp-project.com/sicura-release-console.el${facts['os']['release']['major']}.rpm",
   Optional[String] $license_key          = undef,
   String           $release_package      = $license_key ? {
     undef   => $community_release,
     default => $enterprise_release,
   },
-  String           $release_package_name = $release_package.split('/')[-1].regsubst(/(?:(?:-\d[^-]*){2})?\.rpm$/, ''),
+  String           $release_package_name = $release_package.split('/')[-1].regsubst(/(?:(?:-\d[^-]*){2}|\.el\d+)?\.rpm$/, ''),
+  String           $console_release_package_name = $console_release.split('/')[-1].regsubst(/(?:(?:-\d[^-]*){2}|\.el\d+)?\.rpm$/, ''),
   Enum[
     'community',
     'enterprise'
@@ -27,7 +29,7 @@ class simp_ee::install (
   Array            $enterprise_packages  = [
     'simp-enterprise',
   ],
-  String           $license_key_file     = '/etc/simp/license.key',
+  String           $license_key_file     = '/etc/sicura/license.key',
   Optional[String] $simprelease          = undef,
   Optional[String] $simpreleasetype      = undef,
   Optional[String] $ee_simprelease       = undef,
