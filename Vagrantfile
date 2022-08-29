@@ -75,6 +75,16 @@ Vagrant.configure("2") do |config|
       else
         agent.vm.hostname = "#{key}.#{domain}"
       end
+      if %r{^oel7}.match?(key)
+        agent.vm.provision 'shell', inline: <<~END
+          sudo yum install -y -q oracle-epel-release-el7
+        END
+      end
+      if %r{^oel8}.match?(key)
+        agent.vm.provision 'shell', inline: <<~END
+          sudo yum install -y -q oracle-epel-release-el8
+        END
+      end
       agent.vm.network 'private_network', ip: "#{ip_subnet}.#{value['index']}"
     end
   end
