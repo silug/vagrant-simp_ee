@@ -1,0 +1,5 @@
+[simp-agent]
+name=SIMP Agent Repository
+baseurl=http://<CONSOLE-IP>:<CONSOLE-PORT>/plugins/<SCAN-ORG>-console
+enabled=1
+gpgcheck=0

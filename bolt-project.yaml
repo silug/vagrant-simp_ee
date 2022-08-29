@@ -12,3 +12,4 @@ modules:
 - puppetlabs/stdlib
 - simp/simplib
 - herculesteam/augeasproviders_ssh
+- puppetlabs/inifile

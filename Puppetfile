@@ -4,6 +4,7 @@
 # The following directive installs modules to the managed moduledir.
 moduledir '.modules'
 
+mod 'puppetlabs/inifile', '5.3.0'
 mod 'herculesteam/augeasproviders_ssh', '4.0.0'
 mod 'puppetlabs/stdlib', '7.1.0'
 mod 'dylanratcliffe/bolt_vagrant', '1.1.0'

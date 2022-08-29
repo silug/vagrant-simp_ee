@@ -11,4 +11,5 @@ lookup_options:
 <% if defined('$simp_ee::install::release_package_name') { -%>
 
 simp::yum::repo::internet_simp::simp_repos_package: <%= $simp_ee::install::release_package_name %>
+simp::yum::repo::internet_simp::simp_repos_package_url: <%= $simp_ee::install::release_package %> 
 <% } -%>

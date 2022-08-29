@@ -64,21 +64,21 @@ plan simp_ee::scanner (
         group   => 'puppet',
         mode    => '0640',
         content => epp('simp_ee/scanner.yaml.epp', {
-          'collector'      => $_collector,
-          'token'          => $token,
-          'extra_config'   => $extra_config,
-          'scanners'       => [
-            # FIXME - Disabled until we are configuring the assessor (#7)
-            # 'ciscat',
-            $_os ? {
-              'windows' => 'jscat',
-              default   => 'openscap',
+            'collector'      => $_collector,
+            'token'          => $token,
+            'extra_config'   => $extra_config,
+            'abilities'      => [
+              # FIXME - Disabled until we are configuring the assessor (#7)
+              # 'ciscat',
+              $_os ? {
+                'windows' => 'jscat',
+                default   => 'openscap',
+              },
+            ],
+            'package_source' => $_os ? {
+              'windows' => $msi_pkg,
+              default   => $rpm_pkg,
             },
-          ],
-          'package_source' => $_os ? {
-            'windows' => $msi_pkg,
-            default   => $rpm_pkg,
-          },
         }),
       }
     }

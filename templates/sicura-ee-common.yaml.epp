@@ -1,0 +1,7 @@
+---
+simp::yum::repo::internet_simp::simp_repos_package: <%= $simp_ee::install::release_package_name %>
+simp::yum::repo::internet_simp::simp_repos_package_url: <%= $simp_ee::install::enterprise_release %>
+classes: 
+  - 'compliance_markup'
+simp::classes:
+  - 'simp::yum::repo::internet_simp'

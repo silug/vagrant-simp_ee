@@ -7,7 +7,7 @@ class simp_ee::bootstrap {
     path        => '/bin:/usr/bin',
     refreshonly => true,
   }
-  -> exec { 'simp bootstrap -r':
+  -> exec { 'simp bootstrap -r -w 10':
     path        => '/bin:/usr/bin',
     environment => [
       'USER=root',

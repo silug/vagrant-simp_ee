@@ -94,16 +94,16 @@ cli::simp::scenario: simp
 # configurations will be created for both the SIMP server and
 # SIMP clients. These configurations will point to official
 # SIMP repositories.
-cli::use_internet_simp_yum_repos: true
+cli::use_internet_simp_yum_repos: false
 
-# === grub::password ===
+# === simp_grub::password ===
 # The password to access GRUB.
 #
 # The value entered is used to set the GRUB password and to generate a hash
 # stored in grub::password.
 #
 # This is 'bootpassword'
-grub::password: grub.pbkdf2.sha512.10000.6B7B377A81EEC2C76678E2BC56007FF3A95BD10A4887BE7A17CA606045A583AF4006B2D26E6D9913F681D3EF4FC3629788CA166F19812118B81B0B953FE9B5D9.B89E143690907BC46D8D24A8B8CE5C7F36EB177B1A1D3888BC4012B6619E83AE2389D058391228F6D917AC27B82EE4239C417FD4E9CEF9339C97E37D1EE8E126
+simp_grub::password: grub.pbkdf2.sha512.10000.6B7B377A81EEC2C76678E2BC56007FF3A95BD10A4887BE7A17CA606045A583AF4006B2D26E6D9913F681D3EF4FC3629788CA166F19812118B81B0B953FE9B5D9.B89E143690907BC46D8D24A8B8CE5C7F36EB177B1A1D3888BC4012B6619E83AE2389D058391228F6D917AC27B82EE4239C417FD4E9CEF9339C97E37D1EE8E126
 
 # === puppetdb::master::config::puppetdb_port ===
 # The PuppetDB server port number.
@@ -204,12 +204,12 @@ simp_options::fips: false
 # The LDAP Sync password.
 # simp_options::ldap::sync_pw: Q+3Uk8stXtoyF8tXU52fJFMjewSeON6W
 
-# === simp_options::ntpd::servers ===
+# === simp_options::ntp::servers ===
 # Your network's NTP time servers.
 # A consistent time source is critical to your systems' security.
 # DO NOT run multiple production systems using individual hardware clocks!
 # For many networks, the default gateway (10.128.0.1) provides an NTP server.
-simp_options::ntpd::servers: []
+simp_options::ntp::servers: []
 
 # === simp_options::puppet::ca ===
 # The Puppet Certificate Authority.
@@ -285,3 +285,6 @@ sssd::domains:
 svckill::mode: warning
 
 useradd::securetty: []
+
+cli::local_priv_user: vagrant
+cli::ensure_priv_local_user: yes

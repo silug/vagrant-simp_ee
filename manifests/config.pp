@@ -23,7 +23,16 @@ class simp_ee::config {
     group   => 'puppet',
     mode    => '0640',
     content => epp('simp_ee/common.yaml.epp', {
-      user => $facts["ssh_user"],
+        user => $facts["ssh_user"],
+    }),
+  }
+  -> file { '/etc/puppetlabs/code/environments/production/data/sicura-ee-common.yaml':
+    ensure  => file,
+    owner   => 'root',
+    group   => 'puppet',
+    mode    => '0640',
+    content => epp('simp_ee/sicura-ee-common.yaml.epp', {
+        user => $facts["ssh_user"],
     }),
   }
 
@@ -32,6 +41,6 @@ class simp_ee::config {
     owner   => 'root',
     group   => 'root',
     mode    => '0644',
-    content => "*.${facts['domain']}\n",
+    content => "*.${facts['networking']['domain']}\n",
   }
 }

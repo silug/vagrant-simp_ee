@@ -28,6 +28,7 @@ hierarchy:
       - "role/%{facts.role}.yaml"
   - name: General data
     paths:
+      - sicura-ee-common.yaml
       - default.yaml
       - common.yaml
   - name: SIMP specific data - Please do not modify

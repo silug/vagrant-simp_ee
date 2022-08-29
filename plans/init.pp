@@ -15,6 +15,7 @@ plan simp_ee (
     undef   => '10.10.16',
     default => system::env('VAGRANT_IP_SUBNET'),
   },
+  String[1]           $console_ip           = "${ip_subnet}.11",
   Optional[String[1]] $simprelease          = system::env('SIMP_RELEASE'),
   Optional[String[1]] $simpreleasetype      = system::env('SIMP_RELEASETYPE'),
   Optional[String[1]] $ee_simprelease       = system::env('SIMP_EE_RELEASE'),
@@ -22,7 +23,6 @@ plan simp_ee (
   Optional[String[1]] $rhsm_user            = system::env('SIMP_RHSM_USER'),
   Optional[String[1]] $rhsm_pass            = system::env('SIMP_RHSM_PASS'),
 ) {
-
   get_targets($targets).each |$target| {
     add_facts($target, 'ssh_user' => $target.user)
   }
@@ -75,7 +75,7 @@ plan simp_ee (
     }
   }
 
-  $hosts = get_targets($targets).reduce({}) |$memo, $target| {
+  $hosts = get_targets($targets).reduce( {}) |$memo, $target| {
     $memo + {
       $target.facts['fqdn'] => {
         'ip' => $target.facts['networking']['interfaces'].reduce('') |$m, $v| {
@@ -87,6 +87,9 @@ plan simp_ee (
         },
         'host_aliases' => [
           $target.facts['hostname'],
+          if $target.facts['role'] == 'console' {
+            'sicura-console-collector'
+          },
         ],
       },
     }
@@ -171,19 +174,19 @@ plan simp_ee (
   apply(
     $puppet,
     '_description' => 'Run puppet agent on puppet server',
-    ) {
-      exec { 'puppet agent -t':
-            path        => '/opt/puppetlabs/bin:/bin:/usr/bin',
-            environment => [
-              'USER=root',
-              'HOME=/root',
-            ],
-            logoutput   => true,
-            tries       => 2,
-            timeout     => 0,
-            returns     => [0, 2],
-          }
+  ) {
+    exec { 'puppet agent -t':
+      path        => '/opt/puppetlabs/bin:/bin:/usr/bin',
+      environment => [
+        'USER=root',
+        'HOME=/root',
+      ],
+      logoutput   => true,
+      tries       => 2,
+      timeout     => 0,
+      returns     => [0, 2],
     }
+  }
 
   $fqdns = get_targets($targets).reduce([]) |$memo, $target| {
     $memo + $target.facts['fqdn']
@@ -198,7 +201,7 @@ plan simp_ee (
       owner   => 'root',
       group   => 'root',
       mode    => '0644',
-      content => "${$fqdns.join("\n")}\n"
+      content => "${$fqdns.join("\n")}\n",
     }
     ~> exec { '/var/simp/environments/production/FakeCA/gencerts_nopass.sh':
       path        => '/bin:/usr/bin',
@@ -315,14 +318,26 @@ plan simp_ee (
           $target,
           '_description' => 'Initial Puppet agent run',
         ) {
+          file { '/etc/sicura':
+            ensure => directory,
+            owner  => 'root',
+            group  => 'root',
+            mode   => '0755',
+          }
+          -> file { '/etc/sicura/license.key':
+            ensure  => file,
+            owner   => 'root',
+            group   => 'root',
+            mode    => '0644',
+            content => "${license_key}\n",
+          }
           # FIXME - This is a workaround for a failure.  Puppet should be
           # installing the package, but fails for unknown reasons.  This may be
           # a bug in a particular version of the puppet-agent package.
-          package { 'simp-release-community':
+          -> package { 'simp-release-enterprise':
             ensure => installed,
-            source => 'https://download.simp-project.com/simp-release-community.rpm',
-          }
-          -> exec { 'puppet agent -t':
+            source => "https://download.simp-project.com/sicura-release-enterprise.el${target.facts['os']['release']['major']}.rpm",
+          } -> exec { 'puppet agent -t':
             path        => '/opt/puppetlabs/bin:/bin:/usr/bin',
             environment => [
               'USER=root',
@@ -333,6 +348,17 @@ plan simp_ee (
             timeout     => 0,
             returns     => [0, 2],
           }
+          -> exec { '/bin/bash /vagrant/provision_agent.sh':
+            path        => '/vagrant:/bin:/usr/bin',
+            environment => [
+              'SCAN_ORG=sicura',
+              'SCAN_TYPE=agent',
+              "CONSOLE_IP=${console_ip}",
+              'CONSOLE_PORT=6468'
+            ],
+            logoutput   => true,
+            returns     => [0],
+            }
         }
       }
     }

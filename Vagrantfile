@@ -19,7 +19,9 @@ agents = {
 }
 
 Vagrant.configure("2") do |config|
-  config.vm.synced_folder '.', '/vagrant', disabled: true
+  console_ip = "#{ip_subnet}.11"
+  console_port = '6468'
+  config.vm.synced_folder './agent/linux/shared', '/vagrant'
   config.ssh.keep_alive = true
 
   config.vm.provider 'libvirt' do |libvirt|
@@ -43,7 +45,7 @@ Vagrant.configure("2") do |config|
     console.vm.box = 'centos/7'
     console.vm.hostname = "console.#{domain}"
     console.vm.network 'private_network', ip: "#{ip_subnet}.11"
-    console.vm.network 'forwarded_port', guest: 6468, host: 6468
+    console.vm.network 'forwarded_port', guest: console_port, host: console_port
 
     ['virtualbox', 'libvirt'].each do |p|
       console.vm.provider p do |provider|
@@ -87,6 +89,7 @@ Vagrant.configure("2") do |config|
       end
       agent.vm.network 'private_network', ip: "#{ip_subnet}.#{value['index']}"
     end
+  
   end
 
   config.trigger.before [:up, :provision, :reload], type: :command do |trigger|
