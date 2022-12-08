@@ -1,6 +1,14 @@
----
-classes:
-  - simp_windows
-
-simp::classes:
-  - '--simp::yum::repo::internet_simp'
+<%
+  $config = {
+    'classes' => [
+      'simp_windows',
+      'sicura_agent',
+    ],
+    'simp::classes' => [
+      '--simp::yum::repo::internet_simp',
+    ],
+    'sicura_agent::collector_https' => false,
+    'sicura_agent::license_key' => system::env('SIMP_LICENSE_KEY'),
+  }
+-%>
+<%= $config.to_yaml %>

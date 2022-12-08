@@ -1,0 +1,9 @@
+ if $facts['hostname'] == 'console' and Integer($facts['os']['release']['major']) > 7 {
+   package { 'postgresql-dnfmodule':
+     ensure   => disabled,
+     name     => 'postgresql',
+     provider => 'dnfmodule',
+   }
+   Package['postgresql-dnfmodule']
+   -> Class['postgresql::server']
+ }

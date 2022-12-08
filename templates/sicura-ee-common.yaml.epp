@@ -1,4 +1,5 @@
 ---
+# This adds the Sicura EE repo instead of the CE repo for any 3rd party packages that need to be installed by enforcement
 simp::yum::repo::internet_simp::simp_repos_package: <%= $simp_ee::install::release_package_name %>
 simp::yum::repo::internet_simp::simp_repos_package_url: <%= $simp_ee::install::enterprise_release %>
 classes: 

@@ -63,6 +63,5 @@ cd /home/vagrant
 sed -i "s/collector-https: true/collector-https: false/g" $config
 sed -i "s/collector-port: 6468/collector-port: $CONSOLE_PORT/g" $config
 
-echo "============================RGISTERING NODE====================================="
-"$SCAN_ORG-$SCAN_TYPE" install
-"$SCAN_ORG-$SCAN_TYPE" start
+echo "============================START AGENT SERVICE====================================="
+systemctl start "$SCAN_ORG-$SCAN_TYPE"

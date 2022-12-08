@@ -11,6 +11,7 @@ class simp_ee::classify (
     '/etc/puppetlabs/code/environments/production/data/os/windows.yaml',
     '/etc/puppetlabs/code/environments/production/data/role/console.yaml',
     '/etc/puppetlabs/code/environments/production/data/role/puppet.yaml',
+    '/etc/puppetlabs/code/environments/production/manifests/disable_postgres_dnf_module.pp',
   ],
   String[1] $owner = 'root',
   String[1] $group = 'puppet',

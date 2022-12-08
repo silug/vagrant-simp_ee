@@ -8,14 +8,16 @@ domain = ENV['VAGRANT_DOMAIN'] || 'simp-ee.test'
 
 agents = {
   'win2012r2' => { 'index' => 12, 'box' => 'devopsgroup-io/windows_server-2012r2-standard-amd64-nocm', },
-  'win2016'   => { 'index' => 13, 'box' => 'gusztavvargadr/windows-server', 'box_version' => '1607.0.2012', },
-  'win2019'   => { 'index' => 14, 'box' => 'gusztavvargadr/windows-server', 'box_version' => '1809.0.2012', },
+  'win2016'   => { 'index' => 13, 'box' => 'peru/windows-server-2016-standard-x64-eval', 'box_version' => '20221202.01', },
+  'win2019'   => { 'index' => 14, 'box' => 'gusztavvargadr/windows-server', 'box_version' => '~> 1809', },
   'centos7'   => { 'index' => 15, 'box' => 'centos/7', },
   'centos8'   => { 'index' => 16, 'box' => 'centos/stream8', },
   'oel7'      => { 'index' => 17, 'box' => 'generic/oracle7', },
   'oel8'      => { 'index' => 18, 'box' => 'generic/oracle8', },
   'rhel7'     => { 'index' => 19, 'box' => 'generic/rhel7', },
   'rhel8'     => { 'index' => 20, 'box' => 'generic/rhel8', },
+  'win2022'   => { 'index' => 21, 'box' => 'gusztavvargadr/windows-server', 'box_version' => '~> 2102', },
+  'rocky8'    => { 'index' => 21, 'box' => 'generic/rocky8', },
 }
 
 Vagrant.configure("2") do |config|
@@ -42,7 +44,7 @@ Vagrant.configure("2") do |config|
   end
 
   config.vm.define 'console' do |console|
-    console.vm.box = 'centos/7'
+    console.vm.box = 'centos/stream8'
     console.vm.hostname = "console.#{domain}"
     console.vm.network 'private_network', ip: "#{ip_subnet}.11"
     console.vm.network 'forwarded_port', guest: console_port, host: console_port

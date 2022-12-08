@@ -265,10 +265,6 @@ plan simp_ee (
         mode    => '0644',
         content => "${license_key}\n",
       }
-      -> package { 'sicura-release-enterprise':
-        ensure => installed,
-        source => 'https://download.simp-project.com/sicura-release-enterprise.el7.rpm',
-      }
       -> exec { 'puppet agent -t':
         path        => '/opt/puppetlabs/bin:/bin:/usr/bin',
         environment => [
@@ -334,10 +330,7 @@ plan simp_ee (
           # FIXME - This is a workaround for a failure.  Puppet should be
           # installing the package, but fails for unknown reasons.  This may be
           # a bug in a particular version of the puppet-agent package.
-          -> package { 'simp-release-enterprise':
-            ensure => installed,
-            source => "https://download.simp-project.com/sicura-release-enterprise.el${target.facts['os']['release']['major']}.rpm",
-          } -> exec { 'puppet agent -t':
+          -> exec { 'puppet agent -t':
             path        => '/opt/puppetlabs/bin:/bin:/usr/bin',
             environment => [
               'USER=root',
@@ -354,11 +347,11 @@ plan simp_ee (
               'SCAN_ORG=sicura',
               'SCAN_TYPE=agent',
               "CONSOLE_IP=${console_ip}",
-              'CONSOLE_PORT=6468'
+              'CONSOLE_PORT=6468',
             ],
             logoutput   => true,
             returns     => [0],
-            }
+          }
         }
       }
     }

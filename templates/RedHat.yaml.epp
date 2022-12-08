@@ -1,4 +1,14 @@
----
-classes:
-  - simp
-  - simp_options
+<%
+  $config = {
+    'classes' => [
+      'simp',
+      'simp_options',
+      # 'sicura_agent',
+    ],
+    # 'sicura_agent::dependency_repo' => 'sicura',
+    # 'sicura_agent::manage_agent_repo' => true,
+    # 'sicura_agent::collector_https' => false,
+    # 'sicura_agent::license_key' => system::env('SIMP_LICENSE_KEY'),
+  }
+-%>
+<%= $config.to_yaml %>

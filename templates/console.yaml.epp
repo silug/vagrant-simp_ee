@@ -1,14 +1,32 @@
----
-classes:
-  - sicura_console
-  - iptables
+<% 
+  $config = {
+    'classes' => [
+      'sicura_console',
+      'iptables',
+    ],
 
-iptables::ports:
-  6468:
-    proto: tcp
-    trusted_nets:
-      - '0.0.0.0/0'
-sicura_console::listen_address: '0.0.0.0'
-sicura_console::license_key: |
-<% $keylines = ($simp_ee::install::license_key).split("\n") -%>
-<%= ($keylines.map | $line | { "  ${line}"}).join("\n") %>
+    'iptables::ports' => {
+      '6468' => {
+        'proto' => 'tcp',
+        'trusted_nets' => [
+          '0.0.0.0/0',
+        ],
+      },
+    },
+
+    # the sicura_console module will ensure that the sicura-release-console package is installed, which conflicts with sicura-release-enterprise
+    'simp::yum::repo::internet_simp::package_ensure' => 'absent',
+
+    # Postgresql installation options
+    'postgresql::globals::version' => '14',
+    'postgresql::globals::server_package_name' => 'postgresql14-server',
+    'postgresql::globals::manage_package_repo' => true,
+    'postgresql::dnfmodule::ensure' => 'disabled',
+    'postgresql::globals::manage_dnf_module' => true,
+    
+    # Standard console settings
+    'sicura_console::listen_address' => '0.0.0.0',
+    'sicura_console::license_key' => system::env('SIMP_LICENSE_KEY'),
+  }
+-%>
+<%= $config.to_yaml %>
